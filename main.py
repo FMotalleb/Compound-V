@@ -73,11 +73,13 @@ def main(printMethod):
     # Here you can change fall off multiplier
     base_Y_aim_correction = 1
     increase_falloff_multiplier = keycodes.ADD
-    decrees_falloff_multiplier = keycodes.SUBTRACT 
+    decrees_falloff_multiplier = keycodes.SUBTRACT
     increase_base_Y_correction = keycodes.NUMPAD6
     decrees_base_Y_correction = keycodes.NUMPAD9
 
     movement_prediction_activator_key = keycodes.MULTIPLY
+    movement_prediction_increase = keycodes.PAGEUP
+    movement_prediction_decrees = keycodes.PAGEDOWN
 
     collection = [fov,
                   distance_limit,
@@ -101,6 +103,8 @@ def main(printMethod):
                   printMethod,
                   increase_base_Y_correction,
                   decrees_base_Y_correction,
+                  movement_prediction_increase,
+                  movement_prediction_decrees
                   ]
     if fov < 0.1 or fov > 3.0:  # you can delete this if you know what you're doing
         print("Check your fov settings.")

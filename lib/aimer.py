@@ -15,8 +15,6 @@ import os
 import numpy as np
 
 
-
-
 # def launch_window():
 #     win_0 = Window()
 #     label_0 = tk.Label(win_0.root, text="init")
@@ -74,6 +72,9 @@ class Aimer:
         self.print = collection[19]
         self.increase_base_Y_correction = collection[20]
         self.decrees_base_Y_correction = collection[21]
+        self.movement_prediction_increase = collection[22]
+        self.movement_prediction_decrees = collection[23]
+        self.movement_prediction_factor = 30
         self.movement_prediction = False
         self.fallOffMultiplier = self.base_Y_aim_correction/100
 
@@ -180,22 +181,32 @@ class Aimer:
                 self.fallOffMultiplier += 0.01
                 self.print("FallOffMultiplier {:.3f}".format(
                     self.fallOffMultiplier))
-                time.sleep(0.1)
+                time.sleep(0.2)
             elif cdll.user32.GetAsyncKeyState(self.decrees_falloff_multiplier) & 0x8000:
                 self.fallOffMultiplier -= 0.01
                 self.print("FallOffMultiplier {:.3f}".format(
                     self.fallOffMultiplier))
-                time.sleep(0.1)
+                time.sleep(0.2)
             if cdll.user32.GetAsyncKeyState(self.increase_base_Y_correction) & 0x8000:
                 self.base_Y_aim_correction += 1
                 self.print("Base Y Aim Correction {:.3f}".format(
                     self.base_Y_aim_correction))
-                time.sleep(0.1)
+                time.sleep(0.2)
             elif cdll.user32.GetAsyncKeyState(self.decrees_base_Y_correction) & 0x8000:
                 self.base_Y_aim_correction -= 1
                 self.print("Base Y Aim Correction {:.3f}".format(
                     self.base_Y_aim_correction))
-                time.sleep(0.1)
+                time.sleep(0.2)
+            if cdll.user32.GetAsyncKeyState(self.movement_prediction_increase) & 0x8000:
+                self.movement_prediction_factor += 5
+                self.print("movement correction factor {}".format(
+                    self.movement_prediction_factor))
+                time.sleep(0.2)
+            elif cdll.user32.GetAsyncKeyState(self.movement_prediction_decrees) & 0x8000:
+                self.movement_prediction_factor -= 5
+                self.print("movement correction factor {}".format(
+                    self.movement_prediction_factor))
+                time.sleep(0.2)
             if cdll.user32.GetAsyncKeyState(self.movement_prediction_activator_key) & 0x8000:
                 self.movement_prediction = not self.movement_prediction
                 if(self.movement_prediction):
@@ -394,11 +405,12 @@ class Aimer:
             if self.autoshoot and pressedL:
                 mouse.release(Button.left)
                 pressedL = False
-            if self.closestSoldier is not None:
-                if cdll.user32.GetAsyncKeyState(self.trigger) & 0x8000:
+            if cdll.user32.GetAsyncKeyState(self.trigger) & 0x8000:
+                if self.closestSoldier is not None:
                     if self.closestSoldierMovementX > self.screensize[0] / 2 or self.closestSoldierMovementY > \
                             self.screensize[1] / 2:
                         continue
+
                     else:
                         if abs(self.closestSoldierMovementX) > self.screensize[0]:
                             continue
@@ -409,11 +421,13 @@ class Aimer:
                         increment = self.distance * self.fallOffMultiplier
                         if self.distance < 75:
                             increment = 0
-                        self.print("{} distance: {:.1f}".format(self.closestSoldier.name,self.distance))
-                        
+
                         increment = increment + self.base_Y_aim_correction
+
+                        self.print("target: {}\ndistance: {:.1f}\ncorrection: {}".format(
+                            self.closestSoldier.name, self.distance, round(increment)))
                         self.move_mouse(int(self.closestSoldierMovementX), int(
-                            self.closestSoldierMovementY) - int(increment))
+                            self.closestSoldierMovementY) - round(increment))
                         if self.dodgeMode:
                             self.dodge = True
                         if self.autoshoot:
@@ -421,6 +435,13 @@ class Aimer:
                                 mouse.press(Button.left)
                                 pressedL = True
                         time.sleep(0.001)
+                else:
+                    self.print("no target")
+            else:
+                if self.closestSoldier is not None:
+                    self.print("can pick {}".format(self.closestSoldier.name))
+                else:
+                    self.print("idle")
 
     def calcAim(self, data, Soldier):
 
@@ -435,7 +456,7 @@ class Aimer:
             if not np.array_equal(self.soldierPrevPosition, [0., 0., 0.]):
                 if(self.counter == 7):
                     self.diff = soldierPosition - self.soldierPrevPosition
-                    self.diff *= distance / 30
+                    self.diff *= distance / self.movement_prediction_factor
                     if self.diff[0] < 0.1 and self.diff[0] > -0.1 and self.diff[1] < 0.1 and self.diff[1] > -0.1 and self.diff[2] < 0.1 and self.diff[2] > -0.1:
                         self.diff = np.array([0., 0., 0.])
             if(self.counter == 7):
