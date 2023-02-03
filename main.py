@@ -11,15 +11,15 @@ import ctypes
 # Field of View
 # Alter this between 0.1 and 3.0 for best results. 0.1 is very narrow, while larger numbers allow
 # for more soldiers to be targeted
-fov = 2.5
+fov = 3
 
 # Distance Limit
 # Example, set to 100 to limit locking onto soldiers further than 100 meters away.
-distance_limit = 100 # can also be: None
+distance_limit = None  # can also be: None
 
 # Trigger Button
 # Grab your preferred button from lib/keycodes.py
-trigger = keycodes.XBUTTON2
+trigger = keycodes.ALT
 
 # If set to True you will automatically crouch and uncrouch while shooting others. According to my experience this will make you be less shot by others.
 dodge_Mode = False
@@ -32,13 +32,13 @@ toggle_dodge_Mode = keycodes.NUMPAD2
 toggle_keep_target = keycodes.NUMPAD3
 
 # If set to True your weapon will automatically shoot after finding a target
-autoshoot = True
+autoshoot = False
 
 # Toggle autoshoot. Use this if you are using a sniper or a small magazine.
 toggle_autoshoot = keycodes.NUMPAD1
 
 # If set to True your weapon will automatically scope as soon as you lock onto a target
-autoscope = True
+autoscope = False
 
 # Press this button to switch between normal aimbot and hunt
 hunt_Toggle = keycodes.NUMPAD5
@@ -58,14 +58,36 @@ aim_switch = keycodes.END
 # Normally, you won't need to change this
 # This will attempt to gather your primary screen size. If you have issues or use
 # a windowed version of BFV, you'll need to set this yourself, which probably comes with its own issues
-screensize = ctypes.windll.user32.GetSystemMetrics(0), ctypes.windll.user32.GetSystemMetrics(1)
+screensize = ctypes.windll.user32.GetSystemMetrics(
+    0), ctypes.windll.user32.GetSystemMetrics(1)
 # or
 #screensize = (1280, 960)
 
-collection = [fov, distance_limit, trigger, autoshoot, autoscope, aim_locations, aim_switch, screensize, hunt_Toggle, hunt_Target_Switch, dodge_Mode, crouch_Key, toggle_autoshoot, toggle_dodge_Mode, toggle_keep_target]
+# Here you can change fall off multiplier
+base_Y_aim_correction = 1
+increase_falloff_multiplier = keycodes.ADD
+decrees_falloff_multiplier = keycodes.SUBTRACT
+collection = [fov,
+              distance_limit,
+              trigger,
+              autoshoot,
+              autoscope,
+              aim_locations,
+              aim_switch,
+              screensize,
+              hunt_Toggle,
+              hunt_Target_Switch,
+              dodge_Mode,
+              crouch_Key,
+              toggle_autoshoot,
+              toggle_dodge_Mode,
+              toggle_keep_target,
+              increase_falloff_multiplier,
+              decrees_falloff_multiplier,
+              base_Y_aim_correction
+              ]
 
 #### END OF CHANGE OPTIONS ####
-
 
 
 if __name__ == "__main__":
@@ -94,6 +116,6 @@ if __name__ == "__main__":
         input("Press Enter to continue...")
         exit(1)
 
-    print ("Using screensize: %s x %s" % screensize)
+    print("Using screensize: %s x %s" % screensize)
     aimer = aimer.Aimer(collection)
     aimer.start()
