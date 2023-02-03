@@ -14,6 +14,25 @@ from playsound import playsound
 import os
 import numpy as np
 
+
+
+
+# def launch_window():
+#     win_0 = Window()
+#     label_0 = tk.Label(win_0.root, text="init")
+#     label_0.pack()
+#     label_0.config(text='sample',)
+#     label_0.mainloop()
+
+
+# # Create the thread
+# window_thread = threading.Thread(target=launch_window)
+# window_thread.setDaemon(True)
+# # Start the thread
+# window_thread.start()
+
+# Run other commands here while the window loop runs in the background.
+
 debug = 1
 
 
@@ -51,6 +70,11 @@ class Aimer:
         self.increase_falloff_multiplier = collection[15]
         self.decrees_falloff_multiplier = collection[16]
         self.base_Y_aim_correction = collection[17]
+        self.movement_prediction_activator_key = collection[18]
+        self.print = collection[19]
+        self.increase_base_Y_correction = collection[20]
+        self.decrees_base_Y_correction = collection[21]
+        self.movement_prediction = False
         self.fallOffMultiplier = self.base_Y_aim_correction/100
 
     def DebugPrintMatrix(self, mat):
@@ -86,6 +110,14 @@ class Aimer:
             if self.dodge:
                 pydirectinput.press(self.crouch_Key)
             time.sleep(0.01)
+
+    def activateSound(self):
+        Thread(target=playsound, args=(os.getcwd() +
+               '/snd/activate.mp3',), daemon=True).start()
+
+    def deActivateSound(self):
+        Thread(target=playsound, args=(os.getcwd() +
+               '/snd/deactivate.mp3',), daemon=True).start()
 
     def start(self):
         print("[+] Searching for BFV.exe")
@@ -145,23 +177,42 @@ class Aimer:
             self.closestSoldierMovementX = 0
             self.closestSoldierMovementY = 0
             if cdll.user32.GetAsyncKeyState(self.increase_falloff_multiplier) & 0x8000:
-                self.fallOffMultiplier += 0.005
-                print("FallOffMultiplier {:.3f}".format(
+                self.fallOffMultiplier += 0.01
+                self.print("FallOffMultiplier {:.3f}".format(
                     self.fallOffMultiplier))
-                time.sleep(0.2)
+                time.sleep(0.1)
             elif cdll.user32.GetAsyncKeyState(self.decrees_falloff_multiplier) & 0x8000:
-                self.fallOffMultiplier -= 0.005
-                print("FallOffMultiplier {:.3f}".format(
+                self.fallOffMultiplier -= 0.01
+                self.print("FallOffMultiplier {:.3f}".format(
                     self.fallOffMultiplier))
+                time.sleep(0.1)
+            if cdll.user32.GetAsyncKeyState(self.increase_base_Y_correction) & 0x8000:
+                self.base_Y_aim_correction += 1
+                self.print("Base Y Aim Correction {:.3f}".format(
+                    self.base_Y_aim_correction))
+                time.sleep(0.1)
+            elif cdll.user32.GetAsyncKeyState(self.decrees_base_Y_correction) & 0x8000:
+                self.base_Y_aim_correction -= 1
+                self.print("Base Y Aim Correction {:.3f}".format(
+                    self.base_Y_aim_correction))
+                time.sleep(0.1)
+            if cdll.user32.GetAsyncKeyState(self.movement_prediction_activator_key) & 0x8000:
+                self.movement_prediction = not self.movement_prediction
+                if(self.movement_prediction):
+                    self.print("movement prediction activated")
+                    self.activateSound()
+                else:
+                    self.print("movement prediction deactivated")
+                    self.deActivateSound()
                 time.sleep(0.2)
             if cdll.user32.GetAsyncKeyState(self.toggle_keep_target) & 0x8000:
                 keepTarget = not keepTarget
                 if keepTarget:
-                    Thread(target=playsound, args=(os.getcwd() +
-                           '/snd/activate.mp3',), daemon=True).start()
+                    self.print("keep target on")
+                    self.activateSound()
                 else:
-                    Thread(target=playsound, args=(os.getcwd() +
-                           './snd/deactivate.mp3',), daemon=True).start()
+                    self.print("keep target off")
+                    self.deActivateSound()
                 time.sleep(1)
 
             if cdll.user32.GetAsyncKeyState(self.huntToggle) & 0x8000:
@@ -173,12 +224,10 @@ class Aimer:
                     huntMode = not huntMode
                     if huntMode:
                         self.distance_limit = None
-                        Thread(target=playsound, args=(os.getcwd() +
-                               '/snd/activate.mp3',), daemon=True).start()
+                        self.activateSound()
                     else:
                         self.distance_limit = self.collection[1]
-                        Thread(target=playsound, args=(os.getcwd() +
-                               './snd/deactivate.mp3',), daemon=True).start()
+                        self.deActivateSound()
                 time.sleep(1)
 
             if cdll.user32.GetAsyncKeyState(self.huntTargetSwitch) & 0x8000:
@@ -205,21 +254,19 @@ class Aimer:
             if cdll.user32.GetAsyncKeyState(self.toggle_autoshoot) & 0x8000:
                 self.autoshoot = not self.autoshoot
                 if self.autoshoot:
-                    Thread(target=playsound, args=(os.getcwd() +
-                           '/snd/activate.mp3',), daemon=True).start()
+                    self.print("auto shoot on")
+                    self.activateSound()
                 else:
-                    Thread(target=playsound, args=(os.getcwd() +
-                           '/snd/deactivate.mp3',), daemon=True).start()
+                    self.print("auto shoot off")
+                    self.deActivateSound()
                 time.sleep(0.3)
 
             if cdll.user32.GetAsyncKeyState(self.toggle_dodge_Mode) & 0x8000:
                 self.dodgeMode = not self.dodgeMode
                 if self.dodgeMode:
-                    Thread(target=playsound, args=(os.getcwd() +
-                           '/snd/activate.mp3',), daemon=True).start()
+                    self.activateSound()
                 else:
-                    Thread(target=playsound, args=(os.getcwd() +
-                           '/snd/deactivate.mp3',), daemon=True).start()
+                    self.deActivateSound()
                 time.sleep(0.3)
 
             if self.lastSoldier != 0:
@@ -360,9 +407,11 @@ class Aimer:
                         if self.closestSoldierMovementX == 0 and self.closestSoldierMovementY == 0:
                             continue
                         increment = self.distance * self.fallOffMultiplier
-                        if self.distance < 100:
+                        if self.distance < 75:
                             increment = 0
-                        increment += self.base_Y_aim_correction
+                        self.print("{} distance: {:.1f}".format(self.closestSoldier.name,self.distance))
+                        
+                        increment = increment + self.base_Y_aim_correction
                         self.move_mouse(int(self.closestSoldierMovementX), int(
                             self.closestSoldierMovementY) - int(increment))
                         if self.dodgeMode:
@@ -380,13 +429,13 @@ class Aimer:
         distance = self.FindDistance(Soldier.transform[3][0], Soldier.transform[3][1], Soldier.transform[3][2],
                                      data.mytransform[3][0], data.mytransform[3][1], data.mytransform[3][2])
 
-        if Soldier.ptr == self.lastSoldier and distance > 45:
+        if Soldier.ptr == self.lastSoldier and distance > 45 and self.movement_prediction:
             soldierPosition = np.array(
                 [transform[0], transform[1], transform[2]])
             if not np.array_equal(self.soldierPrevPosition, [0., 0., 0.]):
                 if(self.counter == 7):
                     self.diff = soldierPosition - self.soldierPrevPosition
-                    self.diff *= distance / 25
+                    self.diff *= distance / 30
                     if self.diff[0] < 0.1 and self.diff[0] > -0.1 and self.diff[1] < 0.1 and self.diff[1] > -0.1 and self.diff[2] < 0.1 and self.diff[2] > -0.1:
                         self.diff = np.array([0., 0., 0.])
             if(self.counter == 7):
