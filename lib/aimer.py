@@ -7,13 +7,11 @@ import math
 from ctypes import *
 from pynput.mouse import Button, Controller
 from difflib import SequenceMatcher
-import pyautogui
 import pydirectinput
 from threading import Thread
 from playsound import playsound
 import os
 import numpy as np
-import yaml
 import lib.keycodes as keycodes
 # def launch_window():
 #     win_0 = Window()
@@ -48,8 +46,8 @@ class Aimer:
     counter = 0
     diff = np.array([0., 0., 0.])
 
-    def __init__(self, config,print_method):
-       
+    def __init__(self, config, print_method):
+
         #self.collection = collection
         scope = config['basic']
         self.fov = scope['fov']
