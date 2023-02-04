@@ -30,7 +30,8 @@ def main(print_method):
         exit(1)
 
     # print("Using screensize: %s x %s" % screensize)
-    aimer = aim.Aimer(config=config, print_method=print_method)
+    active_config = config['configs'][config['active_config']]
+    aimer = aim.Aimer(config=active_config, print_method=print_method)
     aimer.start()
 
 

@@ -13,21 +13,7 @@ from playsound import playsound
 import os
 import numpy as np
 import lib.keycodes as keycodes
-# def launch_window():
-#     win_0 = Window()
-#     label_0 = tk.Label(win_0.root, text="init")
-#     label_0.pack()
-#     label_0.config(text='sample',)
-#     label_0.mainloop()
-
-
-# # Create the thread
-# window_thread = threading.Thread(target=launch_window)
-# window_thread.setDaemon(True)
-# # Start the thread
-# window_thread.start()
-
-# Run other commands here while the window loop runs in the background.
+import yaml
 
 debug = 1
 
@@ -46,9 +32,7 @@ class Aimer:
     counter = 0
     diff = np.array([0., 0., 0.])
 
-    def __init__(self, config, print_method):
-
-        #self.collection = collection
+    def config(self, config):
         scope = config['basic']
         self.fov = scope['fov']
         self.distance_limit = scope['min_distance']
@@ -94,14 +78,23 @@ class Aimer:
         self.increase_base_Y_correction = keycodes.asArray[scope['increase_key']]
         self.decrease_base_Y_correction = keycodes.asArray[scope['decrease_key']]
 
-        self.print = print_method
-
         scope = config['aiming']['movement_prediction_factor']
         self.movement_prediction_toggle_key = keycodes.asArray[scope['toggle_key']]
         self.movement_prediction_increase = keycodes.asArray[scope['increase_key']]
         self.movement_prediction_decrease = keycodes.asArray[scope['decrease_key']]
         self.movement_prediction_factor = scope['amount']
         self.movement_prediction = scope['is_active']
+
+    def switchTo(self, config_name):
+        with open("config.yaml", "r") as yamlfile:
+            config = yaml.load(yamlfile, Loader=yaml.FullLoader)
+        self.config(config['configs'][config_name])
+        self.print("switched to {}".format(config_name))
+        time.sleep(2)
+
+    def __init__(self, config, print_method):
+        self.config(config)
+        self.print = print_method
 
     def DebugPrintMatrix(self, mat):
         print("[%.3f %.3f %.3f %.3f ]" %
@@ -192,6 +185,12 @@ class Aimer:
         dodge.start()
 
         while 1:
+            if cdll.user32.GetAsyncKeyState(keycodes.INSERT) & 0x8000:
+                self.print('reading config in cmd')
+                config_name=input("enter config name: ")
+                if config_name is not '':
+                    self.switchTo(config_name)
+                    
             # change aim location index if key is pressed
             if self.aim_switch:
                 if cdll.user32.GetAsyncKeyState(self.aim_switch) & 0x8000:
@@ -267,10 +266,11 @@ class Aimer:
                 else:
                     huntMode = not huntMode
                     if huntMode:
+                        self.distance_limit_old = self.distance_limit
                         self.distance_limit = None
                         self.activateSound()
                     else:
-                        #self.distance_limit = self.distance_limit
+                        self.distance_limit = self.distance_limit_old
                         self.deActivateSound()
                 time.sleep(1)
 

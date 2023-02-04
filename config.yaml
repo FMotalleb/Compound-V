@@ -1,59 +1,116 @@
-basic:
-  fov: 3
-  min_distance: null
-  hold_to_aim_key: ALT
-  toggle_keep_target: NUMPAD3
-  screen_size:
-    width: 1920
-    height: 1080
+active_config: default
+
 overlay:
   is_active: true
-auto_shoot:
-  is_active: false
-  toggle_key: NUMPAD1
-auto_scope:
-  is_active: false
 
-hunt:
-  toggle_key: NUMPAD5
-  target_select: NUMPAD8
+configs:
+  default:
+    basic:
+      fov: 3
+      min_distance: null
+      hold_to_aim_key: ALT
+      toggle_keep_target: NUMPAD3
+      screen_size:
+        width: 1920
+        height: 1080
+    auto_shoot:
+      is_active: false
+      toggle_key: NUMPAD1
+    auto_scope:
+      is_active: false
+    hunt:
+      toggle_key: NUMPAD5
+      target_select: NUMPAD8
+    dodge:
+      is_active: false
+      toggle_key: NUMPAD2
+      crouch_Key: ctrl
+    aiming:
+      falloff_correction:
+        amount: 0.01
+        increase_key: ADD
+        decrease_key: SUBTRACT
+      fixed_correction:
+        amount: 0
+        increase_key: NUMPAD6
+        decrease_key: NUMPAD9
+      movement_prediction_factor:
+        is_active: false
+        amount: 30
+        toggle_key: MULTIPLY
+        increase_key: PAGEUP
+        decrease_key: PAGEDOWN
 
-dodge:
-  is_active: false
-  toggle_key: NUMPAD2
-  crouch_Key: ctrl
+      switch_location_key: END
+      locations:
+        - HeadEnd
+        - Head
+        - Spine
+        #- Spine1
+        #- Spine2
+        - Neck
+        #- Neck1
+        #- RightShoulder
+        #- RightArm
+        #- RightForeArm
+        #- RightHand
+        #- LeftShoulder
+        #- LeftArm
+        #- LeftForeArm
+        #- LeftHand
+        - Hips
+  slow:
+    basic:
+      fov: 3
+      min_distance: null
+      hold_to_aim_key: ALT
+      toggle_keep_target: NUMPAD3
+      screen_size:
+        width: 1920
+        height: 1080
+    auto_shoot:
+      is_active: false
+      toggle_key: NUMPAD1
+    auto_scope:
+      is_active: false
+    hunt:
+      toggle_key: NUMPAD5
+      target_select: NUMPAD8
+    dodge:
+      is_active: false
+      toggle_key: NUMPAD2
+      crouch_Key: ctrl
+    aiming:
+      falloff_correction:
+        amount: 0.06
+        increase_key: ADD
+        decrease_key: SUBTRACT
+      fixed_correction:
+        amount: 1
+        increase_key: NUMPAD6
+        decrease_key: NUMPAD9
+      movement_prediction_factor:
+        is_active: false
+        amount: 45
+        toggle_key: MULTIPLY
+        increase_key: PAGEUP
+        decrease_key: PAGEDOWN
 
-aiming:
-  falloff_correction:
-    amount: 0.01
-    increase_key: ADD
-    decrease_key: SUBTRACT
-  fixed_correction:
-    amount: 1
-    increase_key: NUMPAD6
-    decrease_key: NUMPAD9
-  movement_prediction_factor:
-    is_active: false
-    amount: 30
-    toggle_key: MULTIPLY
-    increase_key: PAGEUP
-    decrease_key: PAGEDOWN
-
-  switch_location_key: END
-  locations:
-    #- Head
-    - HeadEnd
-    - Spine
-    #- Spine1
-    #- Spine2
-    - Neck
-    #- Neck1
-    #- RightShoulder
-    #- RightArm
-    #- RightForeArm
-    #- RightHand
-    #- LeftShoulder
-    #- LeftArm
-    #- LeftForeArm
-    #- LeftHand
-    - Hips
+      switch_location_key: END
+      locations:
+        - HeadEnd
+        - Head
+        - Spine
+        #- Spine1
+        #- Spine2
+        - Neck
+        #- Neck1
+        #- RightShoulder
+        #- RightArm
+        #- RightForeArm
+        #- RightHand
+        #- LeftShoulder
+        #- LeftArm
+        #- LeftForeArm
+        #- LeftHand
+        - Hips
