@@ -14,7 +14,7 @@ from playsound import playsound
 import os
 import numpy as np
 import yaml
-
+import lib.keycodes as keycodes
 # def launch_window():
 #     win_0 = Window()
 #     label_0 = tk.Label(win_0.root, text="init")
@@ -48,35 +48,64 @@ class Aimer:
     counter = 0
     diff = np.array([0., 0., 0.])
 
-    def __init__(self, collection):
-        self.collection = collection
-        self.fov = collection[0]
-        self.distance_limit = collection[1]
-        self.trigger = collection[2]
-        self.autoshoot = collection[3]
-        self.autoscope = collection[4]
-        self.aim_locations = collection[5]
-        self.aim_switch = collection[6]
-        self.screensize = collection[7]
-        self.huntToggle = collection[8]
-        self.huntTargetSwitch = collection[9]
-        self.dodgeMode = collection[10]
-        self.crouch_Key = collection[11]
-        self.toggle_autoshoot = collection[12]
-        self.toggle_dodge_Mode = collection[13]
-        self.toggle_keep_target = collection[14]
-        self.increase_falloff_multiplier = collection[15]
-        self.decrease_falloff_multiplier = collection[16]
-        self.base_Y_aim_correction = collection[17]
-        self.movement_prediction_activator_key = collection[18]
-        self.print = collection[19]
-        self.increase_base_Y_correction = collection[20]
-        self.decrease_base_Y_correction = collection[21]
-        self.movement_prediction_increase = collection[22]
-        self.movement_prediction_decrease = collection[23]
-        self.movement_prediction_factor = 30
-        self.movement_prediction = False
-        self.fallOffMultiplier = self.base_Y_aim_correction/100
+    def __init__(self, print_method):
+        with open("config.yaml", "r") as yamlfile:
+            data = yaml.load(yamlfile, Loader=yaml.FullLoader)
+            print("Read successful")
+        #self.collection = collection
+        scope = data['basic']
+        self.fov = scope['fov']
+        self.distance_limit = scope['min_distance']
+        self.trigger = keycodes.asArray[scope['hold_to_aim_key']]
+
+        scope = data['auto_shoot']
+        self.autoshoot = scope['is_active']
+        self.toggle_autoshoot = scope['toggle_key']
+
+        aim_locations = []
+        for bone in data['aiming']['locations']:
+            aim_locations.append(bones[bone])
+        self.aim_locations = aim_locations
+        self.aim_switch = keycodes.asArray[data['aiming']
+                                           ['switch_location_key']]
+
+        scope = data['basic']['screen_size']
+        self.screensize = (scope['width'],
+                           scope['height'])
+
+        scope = data['hunt']
+        self.huntToggle = keycodes.asArray[scope['toggle_key']]
+        self.huntTargetSwitch = keycodes.asArray[scope['target_select']]
+
+        scope = data['auto_scope']
+        self.autoscope = scope['is_active']
+
+        scope = data['dodge']
+        self.dodgeMode = scope['is_active']
+        self.crouch_Key = scope['crouch_Key']
+        self.toggle_dodge_Mode = keycodes.asArray[scope['toggle_key']]
+
+        self.toggle_keep_target = keycodes.asArray[data['basic']
+                                                   ['toggle_keep_target']]
+
+        scope = data['aiming']['falloff_correction']
+        self.fallOffMultiplier = scope['amount']
+        self.increase_falloff_multiplier = keycodes.asArray[scope['increase_key']]
+        self.decrease_falloff_multiplier = keycodes.asArray[scope['decrease_key']]
+
+        scope = data['aiming']['fixed_correction']
+        self.base_Y_aim_correction = scope['amount']
+        self.increase_base_Y_correction = keycodes.asArray[scope['increase_key']]
+        self.decrease_base_Y_correction = keycodes.asArray[scope['decrease_key']]
+
+        self.print = print_method
+
+        scope = data['aiming']['movement_prediction_factor']
+        self.movement_prediction_toggle_key = keycodes.asArray[scope['toggle_key']]
+        self.movement_prediction_increase = keycodes.asArray[scope['increase_key']]
+        self.movement_prediction_decrease = keycodes.asArray[scope['decrease_key']]
+        self.movement_prediction_factor = scope['amount']
+        self.movement_prediction = scope['is_active']
 
     def DebugPrintMatrix(self, mat):
         print("[%.3f %.3f %.3f %.3f ]" %
@@ -120,14 +149,22 @@ class Aimer:
         Thread(target=playsound, args=(os.getcwd() +
                '/snd/deactivate.mp3',), daemon=True).start()
 
-    def start(self):
+    def start(self, retry_count=0):
         print("[+] Searching for BFV.exe")
         phandle = BFV.get_handle()
         if phandle:
             time.sleep(1)
         else:
-            print("[-] Error: Cannot find BFV.exe")
-            exit(1)
+            if(retry_count >= 10):
+                print("[-] Error: Cannot find BFV.exe after 50 seconds exiting")
+                exit(1)
+            print(
+                "[-] Error: Cannot find BFV.exe retry in 5 seconds: {}".format(retry_count))
+            retry_count = retry_count+1
+
+            time.sleep(5)
+
+            self.start()
 
         print("[+] BFV.exe found, Handle 0x%x" % phandle)
         cnt = 0
@@ -207,7 +244,7 @@ class Aimer:
                 self.print("movement correction factor {}".format(
                     self.movement_prediction_factor))
                 time.sleep(0.2)
-            if cdll.user32.GetAsyncKeyState(self.movement_prediction_activator_key) & 0x8000:
+            if cdll.user32.GetAsyncKeyState(self.movement_prediction_toggle_key) & 0x8000:
                 self.movement_prediction = not self.movement_prediction
                 if(self.movement_prediction):
                     self.print("movement prediction activated")
@@ -237,7 +274,7 @@ class Aimer:
                         self.distance_limit = None
                         self.activateSound()
                     else:
-                        self.distance_limit = self.collection[1]
+                        #self.distance_limit = self.distance_limit
                         self.deActivateSound()
                 time.sleep(1)
 
