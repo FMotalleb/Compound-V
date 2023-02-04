@@ -1,0 +1,7 @@
+numpy==1.21.5
+overlay==1.1.5
+playsound==1.2.2
+PyDirectInput==1.0.4
+pygame==2.1.2
+pynput==1.7.6
+PyYAML==6.0
