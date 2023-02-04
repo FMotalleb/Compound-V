@@ -1,6 +1,5 @@
-from gc import collect
-from turtle import screensize
 from lib import BFV
+from lib.config import readConfig, saveConfig
 from lib.bones import bones
 import time
 import math
@@ -13,7 +12,6 @@ from playsound import playsound
 import os
 import numpy as np
 import lib.keycodes as keycodes
-import yaml
 
 debug = 1
 
@@ -85,10 +83,28 @@ class Aimer:
         self.movement_prediction_factor = scope['amount']
         self.movement_prediction = scope['is_active']
 
+    def saveInto(self, configName):
+        config = readConfig()
+        config['configs'][configName] = config['configs']['default']
+        config = config['configs'][configName]
+        config['basic']['fov'] = self.fov
+        config['basic']['min_distance'] = self.distance_limit
+        config['auto_shoot']['is_active'] = self.autoshoot
+        config['auto_shoot']['toggle_key'] = self.toggle_autoshoot
+
+        config['auto_scope']['is_active'] = self.autoscope
+        config['dodge']['is_active'] = self.dodgeMode
+        config['dodge']['crouch_Key'] = self.crouch_Key
+
+        config['aiming']['falloff_correction']['amount'] = self.fallOffMultiplier
+        config['aiming']['fixed_correction']['amount'] = self.base_Y_aim_correction
+        config['aiming']['movement_prediction_factor']['amount'] = self.movement_prediction_factor
+        config['aiming']['movement_prediction_factor']['is_active'] = self.movement_prediction
+        saveConfig(configName, config)
+
     def switchTo(self, config_name):
-        with open("config.yaml", "r") as yamlfile:
-            config = yaml.load(yamlfile, Loader=yaml.FullLoader)
-        self.config(config['configs'][config_name])
+
+        self.config(readConfig()['configs'][config_name])
         self.print("switched to {}".format(config_name))
         time.sleep(2)
 
@@ -115,10 +131,8 @@ class Aimer:
         rightMin = 0.5
         leftSpan = 100 - 0
         rightSpan = 1.2 - 0.5
-
         # Convert the left range into a 0-1 range (float)
         valueScaled = float(distance - leftMin) / float(leftSpan)
-
         # Convert the 0-1 range into a value in the right range.
         return rightMin + (valueScaled * rightSpan)
 
@@ -187,10 +201,15 @@ class Aimer:
         while 1:
             if cdll.user32.GetAsyncKeyState(keycodes.INSERT) & 0x8000:
                 self.print('reading config in cmd')
-                config_name=input("enter config name: ")
+                config_name = input("enter config name: ")
                 if config_name is not '':
                     self.switchTo(config_name)
-                    
+            if cdll.user32.GetAsyncKeyState(keycodes.HOME) & 0x8000:
+                self.print('save config in cmd')
+                config_name = input("enter config name: ")
+                if config_name is not '':
+                    self.saveInto(config_name)
+
             # change aim location index if key is pressed
             if self.aim_switch:
                 if cdll.user32.GetAsyncKeyState(self.aim_switch) & 0x8000:

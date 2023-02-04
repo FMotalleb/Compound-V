@@ -4,10 +4,9 @@ from lib import helpers
 import yaml
 import threading
 import tkinter as tk
+from lib.config import readConfig
 from overlay import Window
-with open("config.yaml", "r") as yamlfile:
-    config = yaml.load(yamlfile, Loader=yaml.FullLoader)
-    print("Read successful")
+config = readConfig()
 
 
 def main(print_method):
