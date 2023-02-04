@@ -1,16 +1,16 @@
 from tkinter import N
 from lib import aimer as aim
 from lib import helpers
-from lib import keycodes
-from lib.bones import bones
-import time
-import ctypes
+import yaml
 import threading
 import tkinter as tk
 from overlay import Window
+with open("config.yaml", "r") as yamlfile:
+    config = yaml.load(yamlfile, Loader=yaml.FullLoader)
+    print("Read successful")
 
 
-def main(printMethod):
+def main(print_method):
     print("Compound-V by survivalizeed")
     print()
     if not helpers.is_admin():
@@ -30,7 +30,7 @@ def main(printMethod):
         exit(1)
 
     # print("Using screensize: %s x %s" % screensize)
-    aimer = aim.Aimer(print_method=printMethod)
+    aimer = aim.Aimer(config=config, print_method=print_method)
     aimer.start()
 
 
@@ -43,8 +43,9 @@ def printMethod(text):
     label_0.config(text=text,)
 
 
-window_thread = threading.Thread(target=main, args=[printMethod])
-# Start the thread
-window_thread.start()
-
-label_0.mainloop()
+if config['overlay']['is_active']:
+    window_thread = threading.Thread(target=main, args=[printMethod])
+    window_thread.start()
+    label_0.mainloop()
+else:
+    main(print_method=print)

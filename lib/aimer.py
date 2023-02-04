@@ -48,59 +48,57 @@ class Aimer:
     counter = 0
     diff = np.array([0., 0., 0.])
 
-    def __init__(self, print_method):
-        with open("config.yaml", "r") as yamlfile:
-            data = yaml.load(yamlfile, Loader=yaml.FullLoader)
-            print("Read successful")
+    def __init__(self, config,print_method):
+       
         #self.collection = collection
-        scope = data['basic']
+        scope = config['basic']
         self.fov = scope['fov']
         self.distance_limit = scope['min_distance']
         self.trigger = keycodes.asArray[scope['hold_to_aim_key']]
 
-        scope = data['auto_shoot']
+        scope = config['auto_shoot']
         self.autoshoot = scope['is_active']
         self.toggle_autoshoot = scope['toggle_key']
 
         aim_locations = []
-        for bone in data['aiming']['locations']:
+        for bone in config['aiming']['locations']:
             aim_locations.append(bones[bone])
         self.aim_locations = aim_locations
-        self.aim_switch = keycodes.asArray[data['aiming']
+        self.aim_switch = keycodes.asArray[config['aiming']
                                            ['switch_location_key']]
 
-        scope = data['basic']['screen_size']
+        scope = config['basic']['screen_size']
         self.screensize = (scope['width'],
                            scope['height'])
 
-        scope = data['hunt']
+        scope = config['hunt']
         self.huntToggle = keycodes.asArray[scope['toggle_key']]
         self.huntTargetSwitch = keycodes.asArray[scope['target_select']]
 
-        scope = data['auto_scope']
+        scope = config['auto_scope']
         self.autoscope = scope['is_active']
 
-        scope = data['dodge']
+        scope = config['dodge']
         self.dodgeMode = scope['is_active']
         self.crouch_Key = scope['crouch_Key']
         self.toggle_dodge_Mode = keycodes.asArray[scope['toggle_key']]
 
-        self.toggle_keep_target = keycodes.asArray[data['basic']
+        self.toggle_keep_target = keycodes.asArray[config['basic']
                                                    ['toggle_keep_target']]
 
-        scope = data['aiming']['falloff_correction']
+        scope = config['aiming']['falloff_correction']
         self.fallOffMultiplier = scope['amount']
         self.increase_falloff_multiplier = keycodes.asArray[scope['increase_key']]
         self.decrease_falloff_multiplier = keycodes.asArray[scope['decrease_key']]
 
-        scope = data['aiming']['fixed_correction']
+        scope = config['aiming']['fixed_correction']
         self.base_Y_aim_correction = scope['amount']
         self.increase_base_Y_correction = keycodes.asArray[scope['increase_key']]
         self.decrease_base_Y_correction = keycodes.asArray[scope['decrease_key']]
 
         self.print = print_method
 
-        scope = data['aiming']['movement_prediction_factor']
+        scope = config['aiming']['movement_prediction_factor']
         self.movement_prediction_toggle_key = keycodes.asArray[scope['toggle_key']]
         self.movement_prediction_increase = keycodes.asArray[scope['increase_key']]
         self.movement_prediction_decrease = keycodes.asArray[scope['decrease_key']]
