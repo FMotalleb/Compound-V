@@ -13,7 +13,7 @@ from threading import Thread
 from playsound import playsound
 import os
 import numpy as np
-
+import yaml
 
 # def launch_window():
 #     win_0 = Window()
@@ -66,14 +66,14 @@ class Aimer:
         self.toggle_dodge_Mode = collection[13]
         self.toggle_keep_target = collection[14]
         self.increase_falloff_multiplier = collection[15]
-        self.decrees_falloff_multiplier = collection[16]
+        self.decrease_falloff_multiplier = collection[16]
         self.base_Y_aim_correction = collection[17]
         self.movement_prediction_activator_key = collection[18]
         self.print = collection[19]
         self.increase_base_Y_correction = collection[20]
-        self.decrees_base_Y_correction = collection[21]
+        self.decrease_base_Y_correction = collection[21]
         self.movement_prediction_increase = collection[22]
-        self.movement_prediction_decrees = collection[23]
+        self.movement_prediction_decrease = collection[23]
         self.movement_prediction_factor = 30
         self.movement_prediction = False
         self.fallOffMultiplier = self.base_Y_aim_correction/100
@@ -182,7 +182,7 @@ class Aimer:
                 self.print("FallOffMultiplier {:.3f}".format(
                     self.fallOffMultiplier))
                 time.sleep(0.2)
-            elif cdll.user32.GetAsyncKeyState(self.decrees_falloff_multiplier) & 0x8000:
+            elif cdll.user32.GetAsyncKeyState(self.decrease_falloff_multiplier) & 0x8000:
                 self.fallOffMultiplier -= 0.01
                 self.print("FallOffMultiplier {:.3f}".format(
                     self.fallOffMultiplier))
@@ -192,7 +192,7 @@ class Aimer:
                 self.print("Base Y Aim Correction {:.3f}".format(
                     self.base_Y_aim_correction))
                 time.sleep(0.2)
-            elif cdll.user32.GetAsyncKeyState(self.decrees_base_Y_correction) & 0x8000:
+            elif cdll.user32.GetAsyncKeyState(self.decrease_base_Y_correction) & 0x8000:
                 self.base_Y_aim_correction -= 1
                 self.print("Base Y Aim Correction {:.3f}".format(
                     self.base_Y_aim_correction))
@@ -202,7 +202,7 @@ class Aimer:
                 self.print("movement correction factor {}".format(
                     self.movement_prediction_factor))
                 time.sleep(0.2)
-            elif cdll.user32.GetAsyncKeyState(self.movement_prediction_decrees) & 0x8000:
+            elif cdll.user32.GetAsyncKeyState(self.movement_prediction_decrease) & 0x8000:
                 self.movement_prediction_factor -= 5
                 self.print("movement correction factor {}".format(
                     self.movement_prediction_factor))
