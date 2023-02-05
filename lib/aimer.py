@@ -200,14 +200,17 @@ class Aimer:
 
         while 1:
             if cdll.user32.GetAsyncKeyState(keycodes.INSERT) & 0x8000:
-                self.print('reading config in cmd')
+                self.print('Config Profile Manager Prompt')
+                operation = input(
+                    "Operation (1:Save Profile,2:Load Profile): ")
+                if(operation == ''):
+                    continue
                 config_name = input("enter config name: ")
-                if config_name is not '':
+                if(config_name==''):
+                    continue
+                if operation == '2':
                     self.switchTo(config_name)
-            if cdll.user32.GetAsyncKeyState(keycodes.HOME) & 0x8000:
-                self.print('save config in cmd')
-                config_name = input("enter config name: ")
-                if config_name is not '':
+                elif operation == '1':
                     self.saveInto(config_name)
 
             # change aim location index if key is pressed
