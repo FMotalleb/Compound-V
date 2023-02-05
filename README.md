@@ -30,7 +30,7 @@
 
 2. ##### [Python](https://www.python.org/downloads/) and add to path
 
-3. ##### cmd.exe: pip: -r requirements.txt
+3. ##### cmd.exe: pip -r requirements.txt
 
 #### Use with recommendation
 
