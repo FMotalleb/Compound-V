@@ -11,22 +11,22 @@ configs:
         decrease_key: NUMPAD9
         increase_key: NUMPAD6
       locations:
-      - Head
-      - HeadEnd
-      - Spine
-      - Spine1
-      - Spine2
-      - Neck
-      - Neck1
-      - RightShoulder
-      - RightArm
-      - RightForeArm
-      - RightHand
-      - LeftShoulder
-      - LeftArm
-      - LeftForeArm
-      - LeftHand
-      - Hips
+        - Head
+        - HeadEnd
+        - Spine
+        - Spine1
+        - Spine2
+        - Neck
+        - Neck1
+        - RightShoulder
+        - RightArm
+        - RightForeArm
+        - RightHand
+        - LeftShoulder
+        - LeftArm
+        - LeftForeArm
+        - LeftHand
+        - Hips
       movement_prediction_factor:
         amount: 0.03
         decrease_key: PAGEDOWN
@@ -65,24 +65,24 @@ configs:
         decrease_key: NUMPAD9
         increase_key: NUMPAD6
       locations:
-      - Head
-      - HeadEnd
-      - Spine
-      - Spine1
-      - Spine2
-      - Neck
-      - Neck1
-      - RightShoulder
-      - RightArm
-      - RightForeArm
-      - RightHand
-      - LeftShoulder
-      - LeftArm
-      - LeftForeArm
-      - LeftHand
-      - Hips
+        - Head
+        - HeadEnd
+        - Spine
+        - Spine1
+        - Spine2
+        - Neck
+        - Neck1
+        - RightShoulder
+        - RightArm
+        - RightForeArm
+        - RightHand
+        - LeftShoulder
+        - LeftArm
+        - LeftForeArm
+        - LeftHand
+        - Hips
       movement_prediction_factor:
-        amount: 0.03
+        amount: 0.025
         decrease_key: PAGEDOWN
         increase_key: PAGEUP
         is_active: false
@@ -119,11 +119,11 @@ configs:
         decrease_key: NUMPAD9
         increase_key: NUMPAD6
       locations:
-      - HeadEnd
-      - Head
-      - Spine
-      - Neck
-      - Hips
+        - HeadEnd
+        - Head
+        - Spine
+        - Neck
+        - Hips
       movement_prediction_factor:
         amount: 0.03
         decrease_key: PAGEDOWN
