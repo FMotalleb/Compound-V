@@ -232,12 +232,12 @@ class Aimer:
             self.closestSoldierMovementX = 0
             self.closestSoldierMovementY = 0
             if cdll.user32.GetAsyncKeyState(self.increase_falloff_multiplier) & 0x8000:
-                self.fallOff_multiplier += 0.001
+                self.fallOff_multiplier += 0.0005
                 self.print("FallOffMultiplier {:.3f}".format(
                     self.fallOff_multiplier))
                 time.sleep(0.2)
             elif cdll.user32.GetAsyncKeyState(self.decrease_falloff_multiplier) & 0x8000:
-                self.fallOff_multiplier -= 0.001
+                self.fallOff_multiplier -= 0.0005
                 self.print("FallOffMultiplier {:.3f}".format(
                     self.fallOff_multiplier))
                 time.sleep(0.2)
@@ -256,12 +256,12 @@ class Aimer:
                     self.base_Y_aim_correction))
                 time.sleep(0.2)
             if cdll.user32.GetAsyncKeyState(self.movement_prediction_increase) & 0x8000:
-                self.movement_prediction_factor += 0.0005
+                self.movement_prediction_factor += 0.0001
                 self.print("movement correction factor {}".format(
                     self.movement_prediction_factor))
                 time.sleep(0.2)
             elif cdll.user32.GetAsyncKeyState(self.movement_prediction_decrease) & 0x8000:
-                self.movement_prediction_factor -= 0.0005
+                self.movement_prediction_factor -= 0.0001
                 self.print("movement correction factor {}".format(
                     self.movement_prediction_factor))
                 time.sleep(0.2)
