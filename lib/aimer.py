@@ -18,7 +18,7 @@ debug = 1
 
 class Aimer:
     tick = 0
-    fallOffMultiplier = 0
+    fallOff_multiplier = 0
     closestDistance = 9999
     closestSoldier = None
     closestSoldierMovementX = 0
@@ -67,7 +67,7 @@ class Aimer:
                                                    ['toggle_keep_target']]
 
         scope = config['aiming']['falloff_correction']
-        self.fallOffMultiplier = scope['amount']
+        self.fallOff_multiplier = scope['amount']
         self.increase_falloff_multiplier = keycodes.asArray[scope['increase_key']]
         self.decrease_falloff_multiplier = keycodes.asArray[scope['decrease_key']]
 
@@ -96,7 +96,7 @@ class Aimer:
         config['dodge']['is_active'] = self.dodgeMode
         config['dodge']['crouch_Key'] = self.crouch_Key
 
-        config['aiming']['falloff_correction']['amount'] = self.fallOffMultiplier
+        config['aiming']['falloff_correction']['amount'] = self.fallOff_multiplier
         config['aiming']['fixed_correction']['amount'] = self.base_Y_aim_correction
         config['aiming']['movement_prediction_factor']['amount'] = self.movement_prediction_factor
         config['aiming']['movement_prediction_factor']['is_active'] = self.movement_prediction
@@ -206,7 +206,7 @@ class Aimer:
                 if(operation == ''):
                     continue
                 config_name = input("enter config name: ")
-                if(config_name==''):
+                if(config_name == ''):
                     continue
                 if operation == '2':
                     self.switchTo(config_name)
@@ -232,15 +232,19 @@ class Aimer:
             self.closestSoldierMovementX = 0
             self.closestSoldierMovementY = 0
             if cdll.user32.GetAsyncKeyState(self.increase_falloff_multiplier) & 0x8000:
-                self.fallOffMultiplier += 0.01
+                self.fallOff_multiplier += 0.001
                 self.print("FallOffMultiplier {:.3f}".format(
-                    self.fallOffMultiplier))
+                    self.fallOff_multiplier))
                 time.sleep(0.2)
             elif cdll.user32.GetAsyncKeyState(self.decrease_falloff_multiplier) & 0x8000:
-                self.fallOffMultiplier -= 0.01
+                self.fallOff_multiplier -= 0.001
                 self.print("FallOffMultiplier {:.3f}".format(
-                    self.fallOffMultiplier))
+                    self.fallOff_multiplier))
                 time.sleep(0.2)
+                if self.fallOff_multiplier < 1:
+                    self.print(
+                        'you have reduced falloff multiplier under `1`\nthis will cause aim to get below target for longer distances')
+                    time.sleep(2)
             if cdll.user32.GetAsyncKeyState(self.increase_base_Y_correction) & 0x8000:
                 self.base_Y_aim_correction += 1
                 self.print("Base Y Aim Correction {:.3f}".format(
@@ -252,12 +256,12 @@ class Aimer:
                     self.base_Y_aim_correction))
                 time.sleep(0.2)
             if cdll.user32.GetAsyncKeyState(self.movement_prediction_increase) & 0x8000:
-                self.movement_prediction_factor += 5
+                self.movement_prediction_factor += 0.0005
                 self.print("movement correction factor {}".format(
                     self.movement_prediction_factor))
                 time.sleep(0.2)
             elif cdll.user32.GetAsyncKeyState(self.movement_prediction_decrease) & 0x8000:
-                self.movement_prediction_factor -= 5
+                self.movement_prediction_factor -= 0.0005
                 self.print("movement correction factor {}".format(
                     self.movement_prediction_factor))
                 time.sleep(0.2)
@@ -473,9 +477,12 @@ class Aimer:
                             continue
                         if self.closestSoldierMovementX == 0 and self.closestSoldierMovementY == 0:
                             continue
-                        increment = self.distance * self.fallOffMultiplier
-                        if self.distance < 75:
-                            increment = 0
+                        # x ^ {\frac{110}{100}}-x
+
+                        increment = 0
+                        if self.distance > 75:
+                            increment = (pow(
+                                self.distance, self.fallOff_multiplier)-self.distance)*2
 
                         increment = increment + self.base_Y_aim_correction
 
@@ -511,7 +518,7 @@ class Aimer:
             if not np.array_equal(self.soldierPrevPosition, [0., 0., 0.]):
                 if(self.counter == 7):
                     self.diff = soldierPosition - self.soldierPrevPosition
-                    self.diff *= distance / self.movement_prediction_factor
+                    self.diff *= distance * self.movement_prediction_factor
                     if self.diff[0] < 0.1 and self.diff[0] > -0.1 and self.diff[1] < 0.1 and self.diff[1] > -0.1 and self.diff[2] < 0.1 and self.diff[2] > -0.1:
                         self.diff = np.array([0., 0., 0.])
             if(self.counter == 7):

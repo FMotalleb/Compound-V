@@ -1,116 +1,155 @@
 active_config: default
-
-overlay:
-  is_active: true
-
 configs:
-  default:
-    basic:
-      fov: 3
-      min_distance: null
-      hold_to_aim_key: ALT
-      toggle_keep_target: NUMPAD3
-      screen_size:
-        width: 1920
-        height: 1080
-    auto_shoot:
-      is_active: false
-      toggle_key: NUMPAD1
-    auto_scope:
-      is_active: false
-    hunt:
-      toggle_key: NUMPAD5
-      target_select: NUMPAD8
-    dodge:
-      is_active: false
-      toggle_key: NUMPAD2
-      crouch_Key: ctrl
+  at:
     aiming:
       falloff_correction:
-        amount: 0.01
-        increase_key: ADD
+        amount: 1.0069999999999997
         decrease_key: SUBTRACT
+        increase_key: ADD
       fixed_correction:
         amount: 0
-        increase_key: NUMPAD6
         decrease_key: NUMPAD9
-      movement_prediction_factor:
-        is_active: false
-        amount: 30
-        toggle_key: MULTIPLY
-        increase_key: PAGEUP
-        decrease_key: PAGEDOWN
-
-      switch_location_key: END
+        increase_key: NUMPAD6
       locations:
-        - HeadEnd
-        - Head
-        - Spine
-        #- Spine1
-        #- Spine2
-        - Neck
-        #- Neck1
-        #- RightShoulder
-        #- RightArm
-        #- RightForeArm
-        #- RightHand
-        #- LeftShoulder
-        #- LeftArm
-        #- LeftForeArm
-        #- LeftHand
-        - Hips
-  slow:
-    basic:
-      fov: 3
-      min_distance: null
-      hold_to_aim_key: ALT
-      toggle_keep_target: NUMPAD3
-      screen_size:
-        width: 1920
-        height: 1080
+      - Head
+      - HeadEnd
+      - Spine
+      - Spine1
+      - Spine2
+      - Neck
+      - Neck1
+      - RightShoulder
+      - RightArm
+      - RightForeArm
+      - RightHand
+      - LeftShoulder
+      - LeftArm
+      - LeftForeArm
+      - LeftHand
+      - Hips
+      movement_prediction_factor:
+        amount: 0.03
+        decrease_key: PAGEDOWN
+        increase_key: PAGEUP
+        is_active: true
+        toggle_key: MULTIPLY
+      switch_location_key: END
+    auto_scope:
+      is_active: false
     auto_shoot:
       is_active: false
       toggle_key: NUMPAD1
-    auto_scope:
-      is_active: false
-    hunt:
-      toggle_key: NUMPAD5
-      target_select: NUMPAD8
+    basic:
+      fov: 3
+      hold_to_aim_key: ALT
+      min_distance: null
+      screen_size:
+        height: 1080
+        width: 1920
+      toggle_keep_target: NUMPAD3
     dodge:
+      crouch_Key: ctrl
       is_active: false
       toggle_key: NUMPAD2
-      crouch_Key: ctrl
+    hunt:
+      target_select: NUMPAD8
+      toggle_key: NUMPAD5
+  default:
     aiming:
       falloff_correction:
-        amount: 0.06
-        increase_key: ADD
+        amount: 1.005
         decrease_key: SUBTRACT
+        increase_key: ADD
       fixed_correction:
         amount: 1
-        increase_key: NUMPAD6
         decrease_key: NUMPAD9
-      movement_prediction_factor:
-        is_active: false
-        amount: 45
-        toggle_key: MULTIPLY
-        increase_key: PAGEUP
-        decrease_key: PAGEDOWN
-
-      switch_location_key: END
+        increase_key: NUMPAD6
       locations:
-        - HeadEnd
-        - Head
-        - Spine
-        #- Spine1
-        #- Spine2
-        - Neck
-        #- Neck1
-        #- RightShoulder
-        #- RightArm
-        #- RightForeArm
-        #- RightHand
-        #- LeftShoulder
-        #- LeftArm
-        #- LeftForeArm
-        #- LeftHand
-        - Hips
+      - Head
+      - HeadEnd
+      - Spine
+      - Spine1
+      - Spine2
+      - Neck
+      - Neck1
+      - RightShoulder
+      - RightArm
+      - RightForeArm
+      - RightHand
+      - LeftShoulder
+      - LeftArm
+      - LeftForeArm
+      - LeftHand
+      - Hips
+      movement_prediction_factor:
+        amount: 0.03
+        decrease_key: PAGEDOWN
+        increase_key: PAGEUP
+        is_active: false
+        toggle_key: MULTIPLY
+      switch_location_key: END
+    auto_scope:
+      is_active: false
+    auto_shoot:
+      is_active: false
+      toggle_key: NUMPAD1
+    basic:
+      fov: 3
+      hold_to_aim_key: ALT
+      min_distance: null
+      screen_size:
+        height: 1080
+        width: 1920
+      toggle_keep_target: NUMPAD3
+    dodge:
+      crouch_Key: ctrl
+      is_active: false
+      toggle_key: NUMPAD2
+    hunt:
+      target_select: NUMPAD8
+      toggle_key: NUMPAD5
+  slow:
+    aiming:
+      falloff_correction:
+        amount: 1.02
+        decrease_key: SUBTRACT
+        increase_key: ADD
+      fixed_correction:
+        amount: 1
+        decrease_key: NUMPAD9
+        increase_key: NUMPAD6
+      locations:
+      - HeadEnd
+      - Head
+      - Spine
+      - Neck
+      - Hips
+      movement_prediction_factor:
+        amount: 0.03
+        decrease_key: PAGEDOWN
+        increase_key: PAGEUP
+        is_active: false
+        toggle_key: MULTIPLY
+      switch_location_key: END
+    auto_scope:
+      is_active: false
+    auto_shoot:
+      is_active: false
+      toggle_key: NUMPAD1
+    basic:
+      fov: 3
+      hold_to_aim_key: ALT
+      min_distance: null
+      screen_size:
+        height: 1080
+        width: 1920
+      toggle_keep_target: NUMPAD3
+    dodge:
+      crouch_Key: ctrl
+      is_active: false
+      toggle_key: NUMPAD2
+    hunt:
+      target_select: NUMPAD8
+      toggle_key: NUMPAD5
+overlay:
+  is_active: true
